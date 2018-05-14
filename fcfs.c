@@ -49,18 +49,18 @@ void calculate_completion_time() {
 
 	int least_position = 0;        //position of least arrival time process
 	int last_completion_time = 0;     //time of completion for last executed process
-	int start_execution_time;       //time for current process to start execution
+	int start_execution_time = 0;       //time for current process to start execution
 	for (i = 0; i < NUMBER_OF_PROCESSES; i++) {
 		least_position = find_process_with_least_arrival_time(_arrival_time, NUMBER_OF_PROCESSES);
 
 		if (last_completion_time > arrival_time[least_position]) {
-			completion_time[least_position] = last_completion_time + burst_time[least_position];
+			start_execution_time = last_completion_time;
 		}
 		else {
-			completion_time[least_position] = arrival_time[least_position] + burst_time[least_position];
+			start_execution_time = arrival_time[least_position];
 		}
-
-		last_completion_time = completion_time[least_position];
+		
+		last_completion_time = completion_time[least_position] = start_execution_time + burst_time[least_position];
 		_arrival_time[least_position] = 2147483647;       //Use a big number to prevent choosing this process again as least arrival time
 	}
 }
