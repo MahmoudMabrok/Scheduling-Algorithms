@@ -25,6 +25,7 @@ void calculate_average_waiting_time();
 void calculate_and_print();
 
 int main(void){
+	
     processes_ids[0] = 1;
     processes_ids[1] = 2;
     processes_ids[2] = 3;
@@ -41,102 +42,6 @@ int main(void){
     average_waiting_time = 0;
     calculate_and_print();
     return 0;
-}
-
-int find_process_with_least_arrival_time(int _arrival_time[], int n) {
-	int i, position = 0, least = _arrival_time[0];
-	for (i = 1; i < n; i++) {
-		if (_arrival_time[i] < least) {
-			least = _arrival_time[i];
-			position = i;
-		}
-	}
-	return position;
-}
-
-int find_shortest_job_process(int _arrival_time[], int _burst_time[], int n, int last_completion_time){
-    int i, j, position = 0, shortest = _burst_time[0];
-    for(i = 1; i < n; i++){
-        if(_arrival_time[i] <= last_completion_time){
-            for(j = 1; j < n; j++){
-                if(_arrival_time[j] <= last_completion_time && _burst_time[j] < shortest){
-                    shortest = _burst_time[j];
-                    position = j;
-                }
-            }
-        }
-        else{
-            int least = find_process_with_least_arrival_time(_arrival_time , NUMBER_OF_PROCESSES);
-            for(j = 1; j < n; j++){
-                if(_arrival_time[j] == least && _burst_time[j] < shortest){
-                    shortest = _burst_time[j];
-                    position = j;
-                }
-            }
-        }
-    }
-    
-    return position;
-}
-
-void calculate_completion_time(){
-    int _burst_time[NUMBER_OF_PROCESSES];
-    int _arrival_time[NUMBER_OF_PROCESSES];
-    
-    int i;
-    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
-        _burst_time[i] = burst_time[i]; 
-        _arrival_time[i] = arrival_time[i];
-    }
-    
-    int shortest_position = 0;        //position of shortest job process
-    int last_completion_time = 0;     //time of completion for last executed process
-    int start_execution_time = 0;       //time for current process to start execution
-    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
-        shortest_position = find_shortest_job_process(_arrival_time, _burst_time, NUMBER_OF_PROCESSES, last_completion_time);
-        processes_execution_order[i] = shortest_position + 1;
-        
-        if(last_completion_time > arrival_time[shortest_position]){
-            start_execution_time = last_completion_time;
-        }
-        else{
-            start_execution_time = arrival_time[shortest_position];
-        }
-        
-        last_completion_time = completion_time[shortest_position] = start_execution_time + burst_time[shortest_position];
-        _burst_time[shortest_position] = 2147483647;       //Use a big number to prevent choosing this process again as least arrival time
-        _arrival_time[shortest_position] = 2147483647;
-    }
-}
-
-void calculate_turnaround_time(){
-    int i;
-    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
-        turnaround_time[i] = completion_time[i] - arrival_time[i];
-    }
-}
-
-void calculate_waiting_time(){
-    int i;
-    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
-        waiting_time[i] = turnaround_time[i] - burst_time[i];
-    }
-}
-
-void calculate_average_turnaround_time(){
-    int i;
-    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
-        average_turnaround_time += turnaround_time[i];    
-    }
-    average_turnaround_time /= NUMBER_OF_PROCESSES;  
-}
-
-void calculate_average_waiting_time(){
-    int i;
-    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
-        average_waiting_time += waiting_time[i];    
-    }
-    average_waiting_time /= NUMBER_OF_PROCESSES;
 }
 
 void calculate_and_print(){
@@ -171,3 +76,104 @@ void calculate_and_print(){
     printf("Average waiting time = %f\n", average_waiting_time);
     printf("Average turn around time = %f\n", average_turnaround_time);
 }
+
+
+void calculate_completion_time(){
+    int _burst_time[NUMBER_OF_PROCESSES];
+    int _arrival_time[NUMBER_OF_PROCESSES];
+    
+    int i;
+    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
+        _burst_time[i] = burst_time[i]; 
+        _arrival_time[i] = arrival_time[i];
+    }
+    
+    int shortest_position = 0;        //position of shortest job process
+    int last_completion_time = 0;     //time of completion for last executed process
+    int start_execution_time = 0;       //time for current process to start execution
+    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
+        shortest_position = find_shortest_job_process(_arrival_time, _burst_time, NUMBER_OF_PROCESSES, last_completion_time);
+        processes_execution_order[i] = shortest_position + 1;
+        
+        if(last_completion_time > arrival_time[shortest_position]){
+            start_execution_time = last_completion_time;
+        }
+        else{
+            start_execution_time = arrival_time[shortest_position];
+        }
+        
+        last_completion_time = completion_time[shortest_position] = start_execution_time + burst_time[shortest_position];
+        _burst_time[shortest_position] = 2147483647;       //Use a big number to prevent choosing this process again as least arrival time
+        _arrival_time[shortest_position] = 2147483647;
+    }
+}
+
+int find_shortest_job_process(int _arrival_time[], int _burst_time[], int n, int last_completion_time){
+    int i, j, position = 0, shortest = _burst_time[0];
+    for(i = 1; i < n; i++){
+        if(_arrival_time[i] <= last_completion_time){
+            for(j = 1; j < n; j++){
+                if(_arrival_time[j] <= last_completion_time && _burst_time[j] < shortest){
+                    shortest = _burst_time[j];
+                    position = j;
+                }
+            }
+        }
+        else{
+            int least = find_process_with_least_arrival_time(_arrival_time , NUMBER_OF_PROCESSES);
+            for(j = 1; j < n; j++){
+                if(_arrival_time[j] == least && _burst_time[j] < shortest){
+                    shortest = _burst_time[j];
+                    position = j;
+                }
+            }
+        }
+    }
+    
+    return position;
+}
+
+int find_process_with_least_arrival_time(int _arrival_time[], int n) {
+	int i, position = 0, least = _arrival_time[0];
+	for (i = 1; i < n; i++) {
+		if (_arrival_time[i] < least) {
+			least = _arrival_time[i];
+			position = i;
+		}
+	}
+	return position;
+}
+
+
+
+
+void calculate_turnaround_time(){
+    int i;
+    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
+        turnaround_time[i] = completion_time[i] - arrival_time[i];
+    }
+}
+
+void calculate_waiting_time(){
+    int i;
+    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
+        waiting_time[i] = turnaround_time[i] - burst_time[i];
+    }
+}
+
+void calculate_average_turnaround_time(){
+    int i;
+    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
+        average_turnaround_time += turnaround_time[i];    
+    }
+    average_turnaround_time /= NUMBER_OF_PROCESSES;  
+}
+
+void calculate_average_waiting_time(){
+    int i;
+    for(i = 0; i < NUMBER_OF_PROCESSES; i++){
+        average_waiting_time += waiting_time[i];    
+    }
+    average_waiting_time /= NUMBER_OF_PROCESSES;
+}
+
