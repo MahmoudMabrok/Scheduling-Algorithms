@@ -1,19 +1,19 @@
 
 #include <stdio.h>
 
-const int NUMBER_OF_PROCESSES = 4;
+#define NUMBER_OF_PROCESSES 4
 
-int processes_ids[NUMBER_OF_PROCESSES] = {1, 2, 3, 4};
+int processes_ids[NUMBER_OF_PROCESSES];
 int processes_execution_order[NUMBER_OF_PROCESSES];
 
-int arrival_time[NUMBER_OF_PROCESSES] = {0 , 0, 0, 0};
+int arrival_time[NUMBER_OF_PROCESSES];
 int completion_time[NUMBER_OF_PROCESSES];
-int burst_time[NUMBER_OF_PROCESSES] = {6, 8, 7, 3};
+int burst_time[NUMBER_OF_PROCESSES];
 int turnaround_time[NUMBER_OF_PROCESSES];
 int waiting_time[NUMBER_OF_PROCESSES];
 
-double average_turnaround_time = 0;
-double average_waiting_time = 0;
+double average_turnaround_time;
+double average_waiting_time;
 
 int find_process_with_least_arrival_time(int _arrival_time[], int n);
 int find_shortest_job_process(int _arrival_time[], int _burst_time[], int n, int last_completion_time);
@@ -25,7 +25,20 @@ void calculate_average_waiting_time();
 void calculate_and_print();
 
 int main(void){
- 
+    processes_ids[0] = 1;
+    processes_ids[1] = 2;
+    processes_ids[2] = 3;
+    processes_ids[3] = 4;
+    
+    arrival_time[0] = arrival_time[1] = arrival_time[2] = arrival_time[3] = 0;
+    
+    burst_time[0] = 6;
+    burst_time[1] = 8;
+    burst_time[2] = 7;
+    burst_time[3] = 3;
+    
+    average_turnaround_time = 0;
+    average_waiting_time = 0;
     calculate_and_print();
     return 0;
 }
